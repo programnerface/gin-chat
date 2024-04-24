@@ -33,3 +33,23 @@ func SearchFriend(userId uint) []UserBasic {
 	utils.DB.Where("id in ?", objIds).Find(&users)
 	return users
 }
+
+// 添加好友
+func AddFriend(userId uint, targetId uint) int {
+	user := UserBasic{}
+	if targetId != 0 {
+		user = FindByID(targetId)
+		fmt.Println(targetId, " >>>>>", userId)
+		//user.Identity 修改成 user.Salt 用户需要登录才会有Identity
+		if user.Salt != "" {
+			contact := Contact{}
+			contact.OwnerId = userId
+			contact.TargetId = targetId
+			contact.Type = 1
+			utils.DB.Create(&contact)
+			return 0
+		}
+		return -1
+	}
+	return -1
+}

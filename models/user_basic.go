@@ -104,3 +104,10 @@ func UpdateUser(user UserBasic) *gorm.DB {
 		Email:    user.Email,
 	})
 }
+
+// 查找某个用户
+func FindByID(id uint) UserBasic {
+	user := UserBasic{}
+	utils.DB.Where("id = ?", id).First(&user)
+	return user
+}

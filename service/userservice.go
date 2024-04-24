@@ -266,3 +266,21 @@ func SearchFriends(c *gin.Context) {
 	//返回请求的类型是封装类型
 	utils.RespOKList(c.Writer, users, len(users))
 }
+
+func AddFriend(c *gin.Context) {
+	userId, _ := strconv.Atoi(c.Request.FormValue("userId"))
+	targetId, _ := strconv.Atoi(c.Request.FormValue("targetId"))
+	code := models.AddFriend(uint(userId), uint(targetId))
+	//c.JSON(200, gin.H{
+	//	"code":    0, //0成功，-1失败
+	//	"message": "查询好友列表成功！",
+	//	"data":    users,
+	//})
+
+	if code == 0 {
+		utils.RespOK(c.Writer, code, "添加好友成功")
+	} else {
+		utils.RespFail(c.Writer, "添加失败")
+	}
+
+}
