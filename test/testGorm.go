@@ -23,10 +23,11 @@ func main() {
 
 	// Migrate the schema 实体类
 	//AutoMigrate() 如果结构体UserBasic在数据库不存在表格，则会去创建它
+	db.AutoMigrate(&models.Community{})
 	//db.AutoMigrate(&models.UserBasic{})
-	db.AutoMigrate(&models.Message{})
-	db.AutoMigrate(&models.GroupBasic{})
-	db.AutoMigrate(&models.Contact{})
+	//db.AutoMigrate(&models.Message{})
+	//db.AutoMigrate(&models.GroupBasic{})
+	//db.AutoMigrate(&models.Contact{})
 
 	// Create 创建
 	//user := &models.UserBasic{}
