@@ -31,3 +31,37 @@ func CreateCommunity(community Community) (int, string) {
 	}
 	return 0, "建群成功"
 }
+
+func LoadCommunity(ownerId uint) ([]*Community, string) {
+	data := make([]*Community, 10)
+	utils.DB.Where(""+
+		""+
+		"owner_id=?", ownerId).Find(&data)
+	//for循环打印出data集合
+	for _, v := range data {
+		fmt.Println(v)
+	}
+	//utils.DB.Where()
+	return data, "查询成功"
+}
+
+// 加入群
+func JoinGroup(userId uint, comId string) (int, string) {
+	contact := Contact{}
+	contact.OwnerId = userId
+	contact.Type = 2
+	community := Community{}
+	utils.DB.Where("id=? or name=?", comId, comId).Find(&community)
+	if community.Name == "" || community.ID == 0 {
+		return -1, "没有找到群"
+	}
+	utils.DB.Where("owner_id=? and target_id=? and type=2", userId, comId).Find(&contact)
+	//if contact.ID != 0 {
+	if !contact.CreatedAt.IsZero() {
+		return -1, "您已加入此群"
+	} else {
+		contact.TargetId = community.ID
+		utils.DB.Create(&contact)
+		return 0, "加群成功"
+	}
+}

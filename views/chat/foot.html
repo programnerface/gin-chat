@@ -48,6 +48,7 @@
                 win: "main",
                 com: {
                     "ownerId": "",
+                    // "owner_id":"",
                     "icon": "",
                     "cate": "",
                     "name": "",
@@ -138,6 +139,14 @@
                 showprocess: false,
 
             },
+            //使用com，上面已经定义了
+            // community:{
+            //     owner_id:"",
+            //     name:"",
+            //     desc:"",
+            //     cate:"",
+            //     icon:""
+            // },
             created: function () {
                 this.loadfriends();
                 this.loadcommunitys();
@@ -559,7 +568,7 @@
 
                 //新建群提交
                 createcommunity() {
-                    //console.log("createcommunity")
+                    // console.log("createcommunity")
                     this.com.ownerId = userId()
                     console.log(this.com)
                     util.post("/contact/createCommunity", this.com).then(res => {

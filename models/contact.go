@@ -35,20 +35,31 @@ func SearchFriend(userId uint) []UserBasic {
 }
 
 // 添加好友
-func AddFriend(userId uint, targetId uint) (int, string) {
-	user := UserBasic{}
-	fmt.Println(targetId, " >>>>>", userId)
-	if targetId != 0 {
-		user = FindByID(targetId)
-		fmt.Println(targetId, " >>>>>", userId)
+// func AddFriend(userId uint, targetId uint) (int, string) {
+func AddFriend(userId uint, targetName string) (int, string) {
+	//user := UserBasic{}
+	//fmt.Println(targetId, " >>>>>", userId)
+	fmt.Println(targetName, " >>>>>", userId)
+	//if targetId != 0 {
+	if targetName != "" {
+		//user = FindByID(targetId)
+		targetUser := FindUserByName(targetName)
+		//fmt.Println(targetId, " >>>>>", userId)
+		fmt.Println(targetUser, " >>>>>", userId)
 		//user.Identity 修改成 user.Salt 用户需要登录才会有Identity
-		if user.Salt != "" {
-			if userId == user.ID {
+		//if user.Salt != "" {
+		if targetUser.Salt != "" {
+			//if userId == user.ID {
+			//	return -1, "不能添加自己"
+			//}
+
+			if targetUser.ID == userId {
 				return -1, "不能添加自己"
 			}
 
 			contact0 := Contact{}
-			utils.DB.Where("owner_id=? and target_id=? and type=1", userId, targetId).Find(&contact0)
+			//utils.DB.Where("owner_id=? and target_id=? and type=1", userId, targetId).Find(&contact0)
+			utils.DB.Where("owner_id=? and target_id=? and type=1", userId, targetUser.ID).Find(&contact0)
 			if contact0.ID != 0 {
 				return -1, "不能重复添加"
 			}
@@ -63,7 +74,8 @@ func AddFriend(userId uint, targetId uint) (int, string) {
 			}()
 			contact := Contact{}
 			contact.OwnerId = userId
-			contact.TargetId = targetId
+			//contact.TargetId = targetId
+			contact.TargetId = targetUser.ID
 			contact.Type = 1
 			if err := utils.DB.Create(&contact).Error; err != nil {
 				tx.Rollback()
@@ -71,7 +83,8 @@ func AddFriend(userId uint, targetId uint) (int, string) {
 			}
 			//插入另一条数据 互为好友的话应该是有两条数据的 8-7 7-8
 			contact1 := Contact{}
-			contact1.OwnerId = targetId
+			//contact1.OwnerId = targetId
+			contact1.OwnerId = targetUser.ID
 			contact1.TargetId = userId
 			contact1.Type = 1
 			if err := utils.DB.Create(&contact1).Error; err != nil {
